@@ -9,5 +9,5 @@
 
 int StatusBarMenuSelect(HWND hwnd, HWND hwndSB, WPARAM wParam, LPARAM lParam);
 void SetStatusBarParts(HWND hwndSB);
-void SetStatusBarText(HWND hwndSB, UINT nPart, UINT uStyle, LPCTSTR fmt, ...);
+void SetStatusBarText(HWND hwndSB, UINT nPart, UINT uStyle, TCHAR* fmt, ...);
 HWND CreateStatusBar(HWND hwndParent);
