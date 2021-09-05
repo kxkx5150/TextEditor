@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{a2c32090-535c-4a24-919d-347f9757070c}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{5113e7d3-8408-4adf-92fb-27c7821bc981}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Source Files\TextView">
+      <UniqueIdentifier>{71a739c7-26cf-446a-9117-d6614e2f4be1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="sequence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextDocument.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Unicode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextView.cpp">
+      <Filter>Source Files\TextView</Filter>
+    </ClCompile>
+    <ClCompile Include="TextViewClipboard.cpp">
+      <Filter>Source Files\TextView</Filter>
+    </ClCompile>
+    <ClCompile Include="TextViewFile.cpp">
+      <Filter>Source Files\TextView</Filter>
+    </ClCompile>
+    <ClCompile Include="TextViewFont.cpp">
+      <Filter>Source Files\TextView</Filter>
+    </ClCompile>
+    <ClCompile Include="TextViewKeyInput.cpp">
+      <Filter>Source Files\TextView</Filter>
+    </ClCompile>
+    <ClCompile Include="TextViewKeyNav.cpp">
+      <Filter>Source Files\TextView</Filter>
+    </ClCompile>
+    <ClCompile Include="TextViewMouse.cpp">
+      <Filter>Source Files\TextView</Filter>
+    </ClCompile>
+    <ClCompile Include="TextViewPaint.cpp">
+      <Filter>Source Files\TextView</Filter>
+    </ClCompile>
+    <ClCompile Include="TextViewScroll.cpp">
+      <Filter>Source Files\TextView</Filter>
+    </ClCompile>
+    <ClCompile Include="TextViewSyntax.cpp">
+      <Filter>Source Files\TextView</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="codepages.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sequence.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextDocument.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Unicode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextView_def.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
