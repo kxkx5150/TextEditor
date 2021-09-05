@@ -53,11 +53,12 @@ void SetStatusBarParts(HWND hwndSB)
 //
 void SetStatusBarText(HWND hwndSB, UINT nPart, UINT uStyle, TCHAR* fmt, ...)
 {
-    //TCHAR tmpbuf[100];
-    //va_list argp;
-    //va_start(argp, fmt);
-    //va_end(argp);
-    SendMessage(hwndSB, SB_SETTEXT, (WPARAM)(nPart | uStyle), (LPARAM)(LPCWSTR)fmt);
+    TCHAR tmpbuf[100];
+    va_list args;
+    va_start(args, fmt);
+    vswprintf(tmpbuf,100, fmt, args);
+    va_end(args);
+    SendMessage(hwndSB, SB_SETTEXT, (WPARAM)(nPart | uStyle), (LPARAM)(LPCWSTR)tmpbuf);
 }
 
 //
@@ -65,17 +66,14 @@ void SetStatusBarText(HWND hwndSB, UINT nPart, UINT uStyle, TCHAR* fmt, ...)
 //
 HWND CreateStatusBar(HWND hwndParent)
 {
-    TCHAR tmpbuf[100];
     HWND hwndSB;
     hwndSB = CreateStatusWindow(dwStatusBarStyles, _T(""), hwndParent, 2);
     SetStatusBarParts(hwndSB);
     TCHAR tc1[] = _T("");
     TCHAR tc2[] = _T(" Ln %d, Col %d");
     TCHAR tc3[] = _T(" INS");
-    wsprintf(tmpbuf, _T(" Ln %d, Col %d"), 1, 1);
-
     SetStatusBarText(hwndSB, 0, 1, tc1);
-    SetStatusBarText(hwndSB, 1, 0, tmpbuf);
+    SetStatusBarText(hwndSB, 1, 0, tc2, 1, 1);
     SetStatusBarText(hwndSB, 2, 0, tc3);
     return hwndSB;
 }
