@@ -2,15 +2,15 @@
 //
 #include "KXEditor.h"
 #include "../TextView/TextView_def.h"
-#include "StatusBar.h"
 #include "Editor.h"
+#include "StatusBar.h"
 
 // Global Variables:
+Editor* g_ptv;
 HINSTANCE hInst; // current instance
 WCHAR szTitle[MAX_LOADSTRING]; // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING]; // the main window class name
 TCHAR g_szAppName[] = APP_TITLE;
-
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
@@ -62,7 +62,7 @@ BOOL InitEditorClass(HINSTANCE hInstance, int nCmdShow)
 {
     hInst = hInstance; // Store instance handle in our global variable
     HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, 0,800, 600, nullptr, nullptr, hInstance, nullptr);
+        CW_USEDEFAULT, 0, 800, 600, nullptr, nullptr, hInstance, nullptr);
 
     if (!hWnd) {
         return FALSE;
@@ -73,10 +73,9 @@ BOOL InitEditorClass(HINSTANCE hInstance, int nCmdShow)
 
     return TRUE;
 }
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    Editor* g_ptv = (Editor*)GetWindowLongPtr(hWnd, 0);
-
     switch (message) {
 
     case WM_COMMAND: {
@@ -87,7 +86,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             DestroyWindow(hWnd);
             break;
         default:
-            return DefWindowProc(hWnd, message, wParam, lParam);
+            if (g_ptv) {
+                return g_ptv->WndProc(hWnd, message, wParam, lParam);
+            } else {
+                return DefWindowProc(hWnd, message, wParam, lParam);
+            }
         }
     } break;
 
@@ -97,23 +100,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         EndPaint(hWnd, &ps);
     } break;
 
-    case WM_CREATE:
-        if ((g_ptv = new Editor(hWnd)) == 0)
+    case WM_CREATE: {
+        if ((g_ptv = new Editor(hInst, hWnd)) == 0)
             return FALSE;
-        SetWindowLongPtr(hWnd, 0, (LONG)g_ptv);
-        break;
+    } break;
 
-    case WM_DESTROY:
+    case WM_DESTROY: {
         delete g_ptv;
-        SetWindowLongPtr(hWnd, 0, 0);
         PostQuitMessage(0);
-        break;
+    } break;
+
     default:
         if (g_ptv)
             return g_ptv->WndProc(hWnd, message, wParam, lParam);
         else
             return DefWindowProc(hWnd, message, wParam, lParam);
     }
+
     return 0;
 }
-

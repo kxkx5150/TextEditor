@@ -53,7 +53,7 @@ void SetStatusBarParts(HWND hwndSB)
 //
 //	sprintf-style wrapper for setting statubar pane text
 //
-void SetStatusBarText(HWND hwndSB, UINT nPart, UINT uStyle, TCHAR *fmt, ...)
+void SetStatusBarText(HWND hwndSB, UINT nPart, UINT uStyle, LPCTSTR fmt, ...)
 {
 	TCHAR tmpbuf[100];
 	va_list argp;
@@ -70,9 +70,9 @@ HWND CreateStatusBar (HWND hwndParent)
 	HWND hwndSB;
 	hwndSB = CreateStatusWindow(dwStatusBarStyles, _T(""), hwndParent, 2);
 	SetStatusBarParts(hwndSB);
-	//SetStatusBarText(hwndSB, 0, 1, _T(""));
-	//SetStatusBarText(hwndSB, 1, 0, _T(" Ln %d, Col %d"), 1, 1);
-	//SetStatusBarText(hwndSB, 2, 0, _T(" INS"));
+	SetStatusBarText(hwndSB, 0, 1, _T(""));
+	SetStatusBarText(hwndSB, 1, 0, _T(" Ln %d, Col %d"), 1, 1);
+	SetStatusBarText(hwndSB, 2, 0, _T(" INS"));
 
 	return hwndSB ;
 }
