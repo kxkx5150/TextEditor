@@ -106,7 +106,7 @@ void Editor::LoadRegSettings()
     GetSettingInt(hKey, (TCHAR*)_T("PaddingFlags"), &g_fPaddingFlags, COURIERNEW | LUCIDACONS);
 
     GetSettingInt(hKey, (TCHAR*)_T("SelMargin"), (LONG*)&g_fSelMargin, TRUE);
-    GetSettingInt(hKey, (TCHAR*)_T("LineNumbers"), (LONG*)&g_fLineNumbers, FALSE);
+    GetSettingInt(hKey, (TCHAR*)_T("LineNumbers"), (LONG*)&g_fLineNumbers, TRUE);
     GetSettingInt(hKey, (TCHAR*)_T("LongLines"), (LONG*)&g_fLongLines, TRUE);
     GetSettingInt(hKey, (TCHAR*)_T("LongLineLimit"), (LONG*)&g_nLongLineLimit, 80);
     GetSettingInt(hKey, (TCHAR*)_T("SaveOnExit"), (LONG*)&g_fSaveOnExit, TRUE);

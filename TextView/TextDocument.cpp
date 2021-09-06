@@ -206,14 +206,15 @@ int TextDocument::getchar(ULONG offset, ULONG lenbytes, ULONG *pch32)
 #ifdef UNICODE
 
 	UTF16   *rawdata_w = (UTF16 *)rawdata;//(WCHAR*)(buffer + offset + m_nHeaderSize);
-	WCHAR     ch16;
+	//WCHAR     ch16;
 	size_t   ch32len = 1;
 
 	switch(m_nFileFormat)
 	{
 	case NCP_ASCII:
-		MultiByteToWideChar(CP_ACP, 0, (CCHAR*)rawdata, 1, &ch16, 1);
-		*pch32 = ch16;
+		//MultiByteToWideChar(CP_ACP, 0, (CCHAR*)rawdata, 1, &ch16, 1);
+        utf8_to_utf32(rawdata, lenbytes, pch32);
+		//*pch32 = ch16;
 		return 1;
 
 	case NCP_UTF16:
@@ -293,68 +294,6 @@ ULONG TextDocument::gettext(ULONG offset, ULONG lenbytes, TCHAR *buf, ULONG *buf
 
 	*buflen = chars_copied;
 	return bytes_processed;
-
-	//ULONG remaining = lenbytes;
-	//int   charbuflen = *buflen;
-
-	//while(remaining)
-/*	{
-		lenbytes = min(lenbytes, sizeof(rawdata));
-		m_seq.render(offset + m_nHeaderSize, rawdata, lenbytes);
-
-#ifdef UNICODE
-
-	switch(m_nFileFormat)
-	{
-	// convert from ANSI->UNICODE
-	case NCP_ASCII:
-		return ascii_to_utf16(rawdata, lenbytes, buf, (size_t*)buflen);
-		
-	case NCP_UTF8:
-		return utf8_to_utf16(rawdata, lenbytes, buf, (size_t*)buflen);
-
-	// already unicode, do a straight memory copy
-	case NCP_UTF16:
-		return copy_utf16((WCHAR*)rawdata, lenbytes/sizeof(WCHAR), buf, (size_t*)buflen);
-
-	// need to convert from big-endian to little-endian
-	case NCP_UTF16BE:
-		return swap_utf16((WCHAR*)rawdata, lenbytes/sizeof(WCHAR), buf, (size_t*)buflen);
-
-	// error! we should *never* reach this point
-	default:
-		*buflen = 0;
-		return 0;	
-	}
-
-#else
-
-	switch(m_nFileFormat)
-	{
-	// we are already an ASCII app, so do a straight memory copy
-	case NCP_ASCII:
-
-		int len;
-		
-		len = min(*buflen, lenbytes);
-		memcpy(buf, rawdata, len);
-
-		*buflen = len;
-		return len;
-
-	// anything else is an error - we cannot support Unicode or multibyte
-	// character sets with a plain ASCII app.
-	default:
-		*buflen = 0;
-		return 0;
-	}
-
-#endif
-
-	//	remaining -= lenbytes;
-	//	buf       += lenbytes;
-	//	offset    += lenbytes;
-	}*/
 }
 
 ULONG TextDocument::getdata(ULONG offset, BYTE *buf, size_t len)
@@ -672,8 +611,9 @@ size_t TextDocument::rawdata_to_utf16(BYTE *rawdata, size_t rawlen, TCHAR *utf16
 	{
 	// convert from ANSI->UNICODE
 	case NCP_ASCII:
-		return ascii_to_utf16(rawdata, rawlen, (UTF16 *)utf16str, utf16len);
-		
+		//return ascii_to_utf16(rawdata, rawlen, (UTF16 *)utf16str, utf16len);
+        return utf8_to_utf16(rawdata, rawlen, (UTF16*)utf16str, utf16len);
+
 	case NCP_UTF8:
 		return utf8_to_utf16(rawdata, rawlen, (UTF16 *)utf16str, utf16len);
 
@@ -707,8 +647,9 @@ size_t TextDocument::utf16_to_rawdata(TCHAR *utf16str, size_t utf16len, BYTE *ra
 	{
 	// convert from UTF16 -> ASCII
 	case NCP_ASCII:
-		return utf16_to_ascii((UTF16 *)utf16str, utf16len, rawdata, rawlen);
-		
+		//return utf16_to_ascii((UTF16 *)utf16str, utf16len, rawdata, rawlen);
+        return utf16_to_utf8((UTF16*)utf16str, utf16len, rawdata, rawlen);
+
 	// convert from UTF16 -> UTF8
 	case NCP_UTF8:
 		return utf16_to_utf8((UTF16 *)utf16str, utf16len, rawdata, rawlen);
