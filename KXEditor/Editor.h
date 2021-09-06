@@ -7,7 +7,7 @@
 
 #define COURIERNEW 1
 #define LUCIDACONS 2
-#define REGLOC _T("SOFTWARE\\kxkx5150\\kxeditor")
+#define REGLOC _T("SOFTWARE\\kxkx5150\\kx_editor")
 
 UINT_PTR CALLBACK OpenHookProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 int RectWidth(RECT* rect);

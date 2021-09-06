@@ -95,9 +95,10 @@ void Editor::LoadRegSettings()
     HKEY hKey, hColKey;
 
     RegCreateKeyEx(HKEY_CURRENT_USER, REGLOC, 0, 0, 0, KEY_READ, 0, &hKey, 0);
+
     GetSettingInt(hKey, (TCHAR*)_T("FontSize"), &g_nFontSize, 10);
     GetSettingInt(hKey, (TCHAR*)_T("FontBold"), (LONG*)&g_fFontBold, FALSE);
-    GetSettingStr(hKey, (TCHAR*)_T("FontName"), g_szFontName, LF_FACESIZE, (TCHAR*)_T("Consolas"));
+    GetSettingStr(hKey, (TCHAR*)_T("FontName"), g_szFontName, LF_FACESIZE, (TCHAR*)_T("MS Gothic"));
     GetSettingInt(hKey, (TCHAR*)_T("FontSmooth"), &g_nFontSmoothing, DEFAULT_QUALITY);
 
     GetSettingInt(hKey, (TCHAR*)_T("PaddingAbove"), &g_nPaddingAbove, 0);
@@ -112,6 +113,7 @@ void Editor::LoadRegSettings()
     GetSettingInt(hKey, (TCHAR*)_T("HLCurLine"), (LONG*)&g_nHLCurLine, FALSE);
 
     RegCreateKeyEx(hKey, _T("Colours"), 0, 0, 0, KEY_READ, 0, &hColKey, 0);
+
     GetSettingInt(hColKey, (TCHAR*)_T("Foreground"), (LONG*)&g_rgbColourList[TXC_FOREGROUND], g_rgbAutoColourList[TXC_FOREGROUND]);
     GetSettingInt(hColKey, (TCHAR*)_T("Background"), (LONG*)&g_rgbColourList[TXC_BACKGROUND], g_rgbAutoColourList[TXC_BACKGROUND]);
     GetSettingInt(hColKey, (TCHAR*)_T("SelFG"), (LONG*)&g_rgbColourList[TXC_HIGHLIGHTTEXT], g_rgbAutoColourList[TXC_HIGHLIGHTTEXT]);
@@ -146,7 +148,6 @@ void Editor::ApplyRegSettings()
 
     if (!m_hwndTextView)
         return;
-    _RPTWN(_CRT_WARN, L"----g_hwndTextView %Xd\n", m_hwndTextView);
 
     g_hFont = EasyCreateFont(g_nFontSize, g_fFontBold, g_nFontSmoothing, g_szFontName);
 
