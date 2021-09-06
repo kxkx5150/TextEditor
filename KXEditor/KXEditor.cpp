@@ -13,6 +13,8 @@ TCHAR g_szAppName[] = APP_TITLE;
 
 BOOL g_fFirstTime = true;
 
+
+
 HFONT g_hFont;
 LONG g_nFontSize;
 BOOL g_fFontBold;
@@ -141,10 +143,6 @@ void LoadRegSettings()
     GetSettingInt(hKey, (TCHAR*)_T("SaveOnExit"), (LONG*)&g_fSaveOnExit, TRUE);
     GetSettingInt(hKey, (TCHAR*)_T("HLCurLine"), (LONG*)&g_nHLCurLine, FALSE);
 
-    //GetSettingInt(hKey, (TCHAR*)_T("AddExplorer"), (LONG*)&g_fAddToExplorer, FALSE);
-    //GetSettingInt(hKey, (TCHAR*)_T("ReplaceNotepad"), (LONG*)&g_fReplaceNotepad, FALSE);
-    //GetSettingInt(hKey, (TCHAR*)_T("ShowStatusbar"), (LONG*)&stbar, FALSE);
-
     RegCreateKeyEx(hKey, _T("Colours"), 0, 0, 0, KEY_READ, 0, &hColKey, 0);
     GetSettingInt(hColKey, (TCHAR*)_T("Foreground"), (LONG*)&g_rgbColourList[TXC_FOREGROUND], g_rgbAutoColourList[TXC_FOREGROUND]);
     GetSettingInt(hColKey, (TCHAR*)_T("Background"), (LONG*)&g_rgbColourList[TXC_BACKGROUND], g_rgbAutoColourList[TXC_BACKGROUND]);
@@ -160,7 +158,6 @@ void LoadRegSettings()
     GetSettingInt(hColKey, (TCHAR*)_T("LongLine"), (LONG*)&g_rgbColourList[TXC_LONGLINE], g_rgbAutoColourList[TXC_LONGLINE]);
     GetSettingInt(hColKey, (TCHAR*)_T("CurlineText"), (LONG*)&g_rgbColourList[TXC_CURRENTLINETEXT], g_rgbAutoColourList[TXC_CURRENTLINETEXT]);
     GetSettingInt(hColKey, (TCHAR*)_T("Curline"), (LONG*)&g_rgbColourList[TXC_CURRENTLINE], g_rgbAutoColourList[TXC_CURRENTLINE]);
-
     GetSettingBin(hColKey, (TCHAR*)_T("Custom"), g_rgbCustColours, sizeof(g_rgbCustColours));
 
     RegCloseKey(hColKey);
@@ -214,6 +211,8 @@ BOOL GetSettingBin(HKEY hkey, TCHAR szKeyName[], PVOID pBuffer, LONG nLength)
     ZeroMemory(pBuffer, nLength);
     return !RegQueryValueEx(hkey, szKeyName, 0, 0, (BYTE*)pBuffer, (LPDWORD)&nLength);
 }
+
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message) {

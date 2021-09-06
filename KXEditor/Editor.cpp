@@ -21,9 +21,6 @@ HWND Editor::getHwndTextView()
     return m_hwndTextView;
 }
 
-
-
-
 void Editor::SetWindowFileName(HWND hwnd, TCHAR* szFileName, BOOL fModified)
 {
     TCHAR ach[MAX_PATH + 4];
@@ -51,7 +48,6 @@ BOOL Editor::ShowOpenFileDlg(HWND hwnd, TCHAR* pstrFileName, TCHAR* pstrTitleNam
     ofn.nMaxFile = _MAX_PATH;
     ofn.nMaxFileTitle = _MAX_FNAME + _MAX_EXT;
 
-    // flags to control appearance of open-file dialog
     ofn.Flags = OFN_EXPLORER | OFN_ENABLESIZING | OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST | 0; //OFN_ENABLEHOOK			;
 
     return GetOpenFileName(&ofn);
@@ -131,7 +127,6 @@ LONG WINAPI Editor::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 }
 UINT Editor::CommandHandler(HWND hwnd, UINT nCtrlId, UINT nCtrlCode, HWND hwndFrom)
 {
-
     switch (nCtrlId) {
     case IDM_FILE_NEW:
         SetWindowText(hwnd, L"Untitled");

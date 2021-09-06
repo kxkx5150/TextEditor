@@ -10,13 +10,12 @@ class Editor {
 private:
     HINSTANCE m_mainhInst;
 
-    HWND m_hWnd;
-    HWND m_hwndTextView;
-    HWND m_hwndStatusbar;
+    HWND m_hWnd = 0;
+    HWND m_hwndTextView = 0;
+    HWND m_hwndStatusbar = 0;
 
     TCHAR g_szFileName[MAX_PATH];
     TCHAR g_szFileTitle[MAX_PATH];
-
 
 public:
     BOOL g_fShowStatusbar = true;
