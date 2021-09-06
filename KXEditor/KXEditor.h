@@ -15,14 +15,19 @@
 #define APP_TITLE _T("KXEditor")
 #define REGLOC _T("SOFTWARE\\kxkx5150\\kxeditor")
 
+#define COURIERNEW 1
+#define LUCIDACONS 2
+
 ATOM EditorClass(HINSTANCE hInstance);
 BOOL InitEditorClass(HINSTANCE, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 BOOL GetSettingInt(HKEY hkey, TCHAR szKeyName[], LONG* pnReturnVal, LONG nDefault);
 BOOL GetSettingStr(HKEY hkey, TCHAR szKeyName[], TCHAR pszReturnStr[], DWORD nLength, TCHAR szDefault[]);
+BOOL GetSettingBin(HKEY hkey, TCHAR szKeyName[], PVOID pBuffer, LONG nLength);
 void LoadRegSettings();
 void ApplyRegSettings();
 
 HFONT EasyCreateFont(int nPointSize, BOOL fBold, DWORD dwQuality, TCHAR* szFace);
 int PointsToLogical(int nPointSize);
+

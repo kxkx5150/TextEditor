@@ -15,8 +15,8 @@
 // for the EM_xxx message constants
 #include <richedit.h>
 
-#include "TextView_def.h"
 #include "TextView.h"
+#include "TextView_def.h"
 #include "racursor.h"
 
 #if !defined(UNICODE)
@@ -36,9 +36,7 @@ TextView::TextView(HWND hwnd)
 {
     m_hWnd = hwnd;
 
-    m_hTheme = 0;
-    //if (m_hTheme != 0)
-    //    m_hTheme = OpenThemeData(hwnd, L"edit");
+    m_hTheme = OpenThemeData(hwnd, L"edit");
 
     // Font-related data
     m_nNumFonts = 1;
@@ -144,8 +142,8 @@ TextView::~TextView()
     for (int i = 0; i < USP_CACHE_SIZE; i++)
         UspFree(m_uspCache[i].uspData);
 
-    //if (m_hTheme != 0)
-    //    CloseThemeData(m_hTheme);
+    if (m_hTheme != 0)
+        CloseThemeData(m_hTheme);
 }
 
 ULONG TextView::NotifyParent(UINT nNotifyCode, NMHDR* optional)

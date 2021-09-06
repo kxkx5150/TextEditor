@@ -1,7 +1,6 @@
 #pragma once
 #include <windows.h>
 
-
 UINT_PTR CALLBACK OpenHookProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 int RectWidth(RECT* rect);
 int RectHeight(RECT* rect);
@@ -15,15 +14,18 @@ private:
     HWND m_hwndTextView;
     HWND m_hwndStatusbar;
 
-    BOOL m_fShowStatusbar = true;
-
     TCHAR g_szFileName[MAX_PATH];
     TCHAR g_szFileTitle[MAX_PATH];
 
+
 public:
+    BOOL g_fShowStatusbar = true;
+
 public:
     Editor(HINSTANCE hInst, HWND hwnd);
     ~Editor();
+
+    HWND getHwndTextView();
 
     void SetWindowFileName(HWND hwnd, TCHAR* szFileName, BOOL fModified);
 

@@ -3,7 +3,6 @@
 #include "StatusBar.h"
 #include "resource.h"
 
-BOOL g_fFirstTime = true;
 
 Editor::Editor(HINSTANCE hInst, HWND hwnd)
 {
@@ -17,6 +16,14 @@ Editor::Editor(HINSTANCE hInst, HWND hwnd)
 Editor::~Editor()
 {
 }
+HWND Editor::getHwndTextView()
+{
+    return m_hwndTextView;
+}
+
+
+
+
 void Editor::SetWindowFileName(HWND hwnd, TCHAR* szFileName, BOOL fModified)
 {
     TCHAR ach[MAX_PATH + 4];
@@ -49,60 +56,6 @@ BOOL Editor::ShowOpenFileDlg(HWND hwnd, TCHAR* pstrFileName, TCHAR* pstrTitleNam
 
     return GetOpenFileName(&ofn);
 }
-
-
-
-
-
-
-
-UINT_PTR CALLBACK OpenHookProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    switch (msg) {
-    case WM_INITDIALOG:
-
-        if (g_fFirstTime) {
-            CenterWindow(GetParent(hwnd));
-            g_fFirstTime = false;
-        }
-
-        return true;
-    }
-
-    return 0;
-}
-void CenterWindow(HWND hwnd)
-{
-    HWND hwndParent = GetParent(hwnd);
-    RECT rcChild;
-    RECT rcParent;
-    int x, y;
-
-    GetWindowRect(hwnd, &rcChild);
-    GetWindowRect(hwndParent, &rcParent);
-
-    x = rcParent.left + (RectWidth(&rcParent) - RectWidth(&rcChild)) / 2;
-    y = rcParent.top + (RectHeight(&rcParent) - RectHeight(&rcChild)) / 2;
-
-    MoveWindow(hwnd, max(0, x), max(0, y), RectWidth(&rcChild), RectHeight(&rcChild), TRUE);
-}
-int RectWidth(RECT* rect)
-{
-    return rect->right - rect->left;
-}
-int RectHeight(RECT* rect)
-{
-    return rect->bottom - rect->top;
-}
-
-
-
-
-
-
-
-
-
 BOOL Editor::DoOpenFile(HWND hwndMain, TCHAR* szFileName, TCHAR* szFileTitle)
 {
     //int fmt, fmtlook[] = { IDM_VIEW_ASCII, IDM_VIEW_UTF8, IDM_VIEW_UTF16, IDM_VIEW_UTF16BE };
@@ -124,15 +77,6 @@ BOOL Editor::DoOpenFile(HWND hwndMain, TCHAR* szFileName, TCHAR* szFileTitle)
         return FALSE;
     }
 }
-
-
-
-
-
-
-
-
-
 LONG WINAPI Editor::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg) {
@@ -166,7 +110,7 @@ LONG WINAPI Editor::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         heightsb = rect.bottom - rect.top;
         hdwp = BeginDeferWindowPos(3);
 
-        if (m_fShowStatusbar) {
+        if (g_fShowStatusbar) {
             DeferWindowPos(hdwp, m_hwndStatusbar, 0, 0, height - heightsb, width, heightsb, SWP_SHOWWINDOW);
             MoveWindow(m_hwndStatusbar, 0, height - heightsb, width, heightsb, TRUE);
             height -= heightsb;

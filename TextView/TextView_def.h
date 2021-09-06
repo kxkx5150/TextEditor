@@ -93,21 +93,21 @@ typedef struct
 //
 //	TextView colours
 //
-#define TXC_FOREGROUND			0			// normal foreground colour
-#define TXC_BACKGROUND			1			// normal background colour
-#define TXC_HIGHLIGHTTEXT		2			// normal text highlight colour
-#define TXC_HIGHLIGHT			3			// normal background highlight colour
-#define TXC_HIGHLIGHTTEXT2		4			// inactive text highlight colour
-#define TXC_HIGHLIGHT2			5			// inactive background highlight colour
-#define TXC_SELMARGIN1			6			// selection margin colour#1
-#define TXC_SELMARGIN2			7			// selection margin colour#2
-#define TXC_LINENUMBERTEXT		8			// line number text
-#define TXC_LINENUMBER			9			// line number background
-#define TXC_LONGLINETEXT		10			// long-line text
-#define TXC_LONGLINE			11			// long-line background
-#define TXC_CURRENTLINETEXT		12			// active line text
-#define TXC_CURRENTLINE			13			// active line background
-#define TXC_MAX_COLOURS			14			// keep this updated!
+//#define TXC_FOREGROUND			0			// normal foreground colour
+//#define TXC_BACKGROUND			1			// normal background colour
+//#define TXC_HIGHLIGHTTEXT		2			// normal text highlight colour
+//#define TXC_HIGHLIGHT			3			// normal background highlight colour
+//#define TXC_HIGHLIGHTTEXT2		4			// inactive text highlight colour
+//#define TXC_HIGHLIGHT2			5			// inactive background highlight colour
+//#define TXC_SELMARGIN1			6			// selection margin colour#1
+//#define TXC_SELMARGIN2			7			// selection margin colour#2
+//#define TXC_LINENUMBERTEXT		8			// line number text
+//#define TXC_LINENUMBER			9			// line number background
+//#define TXC_LONGLINETEXT		10			// long-line text
+//#define TXC_LONGLINE			11			// long-line background
+//#define TXC_CURRENTLINETEXT		12			// active line text
+//#define TXC_CURRENTLINE			13			// active line background
+//#define TXC_MAX_COLOURS			14			// keep this updated!
 
 #define SYSCOL(COLOR_IDX)					   ( 0x80000000 |                     COLOR_IDX  )
 #define MIXED_SYSCOL(COLOR_IDX1, COLOR_IDX2)   ( 0xC0000000 | (COLOR_IDX2 << 8) | COLOR_IDX1 )
