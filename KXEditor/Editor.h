@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 
+
 UINT_PTR CALLBACK OpenHookProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 int RectWidth(RECT* rect);
 int RectHeight(RECT* rect);

@@ -69,11 +69,8 @@ HWND CreateStatusBar(HWND hwndParent)
     HWND hwndSB;
     hwndSB = CreateStatusWindow(dwStatusBarStyles, _T(""), hwndParent, 2);
     SetStatusBarParts(hwndSB);
-    TCHAR tc1[] = _T("");
-    TCHAR tc2[] = _T(" Ln %d, Col %d");
-    TCHAR tc3[] = _T(" INS");
-    SetStatusBarText(hwndSB, 0, 1, tc1);
-    SetStatusBarText(hwndSB, 1, 0, tc2, 1, 1);
-    SetStatusBarText(hwndSB, 2, 0, tc3);
+    SetStatusBarText(hwndSB, 0, 1, (TCHAR*)_T(""));
+    SetStatusBarText(hwndSB, 1, 0, (TCHAR*)_T(" Ln %d, Col %d"), 1, 1);
+    SetStatusBarText(hwndSB, 2, 0, (TCHAR*)_T(" INS"));
     return hwndSB;
 }

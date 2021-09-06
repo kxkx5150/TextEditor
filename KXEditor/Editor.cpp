@@ -5,15 +5,14 @@
 
 BOOL g_fFirstTime = true;
 
-
-
-
 Editor::Editor(HINSTANCE hInst, HWND hwnd)
 {
     m_mainhInst = hInst;
     m_hWnd = hwnd;
     m_hwndTextView = CreateTextView(hwnd);
     m_hwndStatusbar = CreateStatusBar(hwnd);
+
+    PostMessage(m_hWnd, WM_COMMAND, IDM_FILE_NEW, 0);
 }
 Editor::~Editor()
 {
@@ -148,7 +147,6 @@ LONG WINAPI Editor::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
         default:
             return CommandHandler(hwnd, LOWORD(wParam), HIWORD(wParam), (HWND)lParam);
-            //return DefWindowProc(hwnd, msg, wParam, lParam);
         }
     } break;
 
