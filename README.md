@@ -1,6 +1,10 @@
 # KXEditor
  ### Text Editor - Win32 API
- 
+
+<br><br>
+
+https://user-images.githubusercontent.com/10168979/132229194-6b1a54ee-8e03-448b-b371-3a453c1ccad4.mp4
+
  <br><br>
  
  ![キャプチャ](https://user-images.githubusercontent.com/10168979/132134952-3c9bf1e1-713d-40d5-ab99-201231bbfcff.PNG)
