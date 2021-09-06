@@ -1,20 +1,24 @@
 #include "Editor.h"
-#include "../TextView/TextView_def.h"
-#include "StatusBar.h"
-#include "resource.h"
+#include <CRTDBG.H>
 
+BOOL Editor::g_fFirstTime = false;
 
 Editor::Editor(HINSTANCE hInst, HWND hwnd)
 {
+    LoadRegSettings();
+
     m_mainhInst = hInst;
     m_hWnd = hwnd;
     m_hwndTextView = CreateTextView(hwnd);
     m_hwndStatusbar = CreateStatusBar(hwnd);
 
     PostMessage(m_hWnd, WM_COMMAND, IDM_FILE_NEW, 0);
+
+    ApplyRegSettings();
 }
 Editor::~Editor()
 {
+    DeleteObject(g_hFont);
 }
 HWND Editor::getHwndTextView()
 {
@@ -73,6 +77,109 @@ BOOL Editor::DoOpenFile(HWND hwndMain, TCHAR* szFileName, TCHAR* szFileTitle)
         return FALSE;
     }
 }
+
+BOOL Editor::GetSettingInt(HKEY hkey, TCHAR szKeyName[], LONG* pnReturnVal, LONG nDefault)
+{
+    ULONG len = sizeof(nDefault);
+    *pnReturnVal = nDefault;
+    return !RegQueryValueEx(hkey, szKeyName, 0, 0, (BYTE*)pnReturnVal, &len);
+}
+BOOL Editor::GetSettingStr(HKEY hkey, TCHAR szKeyName[], TCHAR pszReturnStr[], DWORD nLength, TCHAR szDefault[])
+{
+    ULONG len = nLength * sizeof(TCHAR);
+    TCHAR* rval = lstrcpyn(pszReturnStr, szDefault, nLength);
+    return !RegQueryValueEx(hkey, szKeyName, 0, 0, (BYTE*)pszReturnStr, &len);
+}
+void Editor::LoadRegSettings()
+{
+    HKEY hKey, hColKey;
+
+    RegCreateKeyEx(HKEY_CURRENT_USER, REGLOC, 0, 0, 0, KEY_READ, 0, &hKey, 0);
+    GetSettingInt(hKey, (TCHAR*)_T("FontSize"), &g_nFontSize, 10);
+    GetSettingInt(hKey, (TCHAR*)_T("FontBold"), (LONG*)&g_fFontBold, FALSE);
+    GetSettingStr(hKey, (TCHAR*)_T("FontName"), g_szFontName, LF_FACESIZE, (TCHAR*)_T("Consolas"));
+    GetSettingInt(hKey, (TCHAR*)_T("FontSmooth"), &g_nFontSmoothing, DEFAULT_QUALITY);
+
+    GetSettingInt(hKey, (TCHAR*)_T("PaddingAbove"), &g_nPaddingAbove, 0);
+    GetSettingInt(hKey, (TCHAR*)_T("PaddingBelow"), &g_nPaddingBelow, 1);
+    GetSettingInt(hKey, (TCHAR*)_T("PaddingFlags"), &g_fPaddingFlags, COURIERNEW | LUCIDACONS);
+
+    GetSettingInt(hKey, (TCHAR*)_T("SelMargin"), (LONG*)&g_fSelMargin, TRUE);
+    GetSettingInt(hKey, (TCHAR*)_T("LineNumbers"), (LONG*)&g_fLineNumbers, FALSE);
+    GetSettingInt(hKey, (TCHAR*)_T("LongLines"), (LONG*)&g_fLongLines, TRUE);
+    GetSettingInt(hKey, (TCHAR*)_T("LongLineLimit"), (LONG*)&g_nLongLineLimit, 80);
+    GetSettingInt(hKey, (TCHAR*)_T("SaveOnExit"), (LONG*)&g_fSaveOnExit, TRUE);
+    GetSettingInt(hKey, (TCHAR*)_T("HLCurLine"), (LONG*)&g_nHLCurLine, FALSE);
+
+    RegCreateKeyEx(hKey, _T("Colours"), 0, 0, 0, KEY_READ, 0, &hColKey, 0);
+    GetSettingInt(hColKey, (TCHAR*)_T("Foreground"), (LONG*)&g_rgbColourList[TXC_FOREGROUND], g_rgbAutoColourList[TXC_FOREGROUND]);
+    GetSettingInt(hColKey, (TCHAR*)_T("Background"), (LONG*)&g_rgbColourList[TXC_BACKGROUND], g_rgbAutoColourList[TXC_BACKGROUND]);
+    GetSettingInt(hColKey, (TCHAR*)_T("SelFG"), (LONG*)&g_rgbColourList[TXC_HIGHLIGHTTEXT], g_rgbAutoColourList[TXC_HIGHLIGHTTEXT]);
+    GetSettingInt(hColKey, (TCHAR*)_T("SelBG"), (LONG*)&g_rgbColourList[TXC_HIGHLIGHT], g_rgbAutoColourList[TXC_HIGHLIGHT]);
+    GetSettingInt(hColKey, (TCHAR*)_T("SelFG2"), (LONG*)&g_rgbColourList[TXC_HIGHLIGHTTEXT2], g_rgbAutoColourList[TXC_HIGHLIGHTTEXT2]);
+    GetSettingInt(hColKey, (TCHAR*)_T("SelBG2"), (LONG*)&g_rgbColourList[TXC_HIGHLIGHT2], g_rgbAutoColourList[TXC_HIGHLIGHT2]);
+    GetSettingInt(hColKey, (TCHAR*)_T("Margin1"), (LONG*)&g_rgbColourList[TXC_SELMARGIN1], g_rgbAutoColourList[TXC_SELMARGIN1]);
+    GetSettingInt(hColKey, (TCHAR*)_T("Margin2"), (LONG*)&g_rgbColourList[TXC_SELMARGIN2], g_rgbAutoColourList[TXC_SELMARGIN2]);
+    GetSettingInt(hColKey, (TCHAR*)_T("LinenoText"), (LONG*)&g_rgbColourList[TXC_LINENUMBERTEXT], g_rgbAutoColourList[TXC_LINENUMBERTEXT]);
+    GetSettingInt(hColKey, (TCHAR*)_T("Lineno"), (LONG*)&g_rgbColourList[TXC_LINENUMBER], g_rgbAutoColourList[TXC_LINENUMBER]);
+    GetSettingInt(hColKey, (TCHAR*)_T("LongLineText"), (LONG*)&g_rgbColourList[TXC_LONGLINETEXT], g_rgbAutoColourList[TXC_LONGLINETEXT]);
+    GetSettingInt(hColKey, (TCHAR*)_T("LongLine"), (LONG*)&g_rgbColourList[TXC_LONGLINE], g_rgbAutoColourList[TXC_LONGLINE]);
+    GetSettingInt(hColKey, (TCHAR*)_T("CurlineText"), (LONG*)&g_rgbColourList[TXC_CURRENTLINETEXT], g_rgbAutoColourList[TXC_CURRENTLINETEXT]);
+    GetSettingInt(hColKey, (TCHAR*)_T("Curline"), (LONG*)&g_rgbColourList[TXC_CURRENTLINE], g_rgbAutoColourList[TXC_CURRENTLINE]);
+    GetSettingBin(hColKey, (TCHAR*)_T("Custom"), g_rgbCustColours, sizeof(g_rgbCustColours));
+
+    RegCloseKey(hColKey);
+    RegCloseKey(hKey);
+}
+int Editor::PointsToLogical(int nPointSize)
+{
+    HDC hdc = GetDC(0);
+    int nLogSize = -MulDiv(nPointSize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+    ReleaseDC(0, hdc);
+
+    return nLogSize;
+}
+void Editor::ApplyRegSettings()
+{
+    if (g_hFont)
+        DeleteObject(g_hFont);
+
+    if (!m_hwndTextView)
+        return;
+    _RPTWN(_CRT_WARN, L"----g_hwndTextView %Xd\n", m_hwndTextView);
+
+    g_hFont = EasyCreateFont(g_nFontSize, g_fFontBold, g_nFontSmoothing, g_szFontName);
+
+    TextView_SetLineSpacing(m_hwndTextView, g_nPaddingAbove, g_nPaddingBelow);
+    TextView_SetStyleBool(m_hwndTextView, TXS_SELMARGIN, g_fSelMargin);
+    TextView_SetStyleBool(m_hwndTextView, TXS_LINENUMBERS, g_fLineNumbers);
+    TextView_SetStyleBool(m_hwndTextView, TXS_LONGLINES, g_fLongLines);
+    TextView_SetStyleBool(m_hwndTextView, TXS_HIGHLIGHTCURLINE, g_nHLCurLine);
+    TextView_SetCaretWidth(m_hwndTextView, 2);
+    TextView_SetLongLine(m_hwndTextView, g_nLongLineLimit);
+
+    SendMessage(m_hwndTextView, WM_SETFONT, (WPARAM)g_hFont, 0);
+
+    for (int i = 0; i < TXC_MAX_COLOURS; i++) {
+        TextView_SetColor(m_hwndTextView, i, g_rgbColourList[i]);
+    }
+}
+HFONT Editor::EasyCreateFont(int nPointSize, BOOL fBold, DWORD dwQuality, TCHAR* szFace)
+{
+    return CreateFont(PointsToLogical(nPointSize),
+        0, 0, 0,
+        fBold ? FW_BOLD : 0,
+        0, 0, 0, DEFAULT_CHARSET, 0, 0,
+        dwQuality,
+        0,
+        szFace);
+}
+BOOL Editor::GetSettingBin(HKEY hkey, TCHAR szKeyName[], PVOID pBuffer, LONG nLength)
+{
+    ZeroMemory(pBuffer, nLength);
+    return !RegQueryValueEx(hkey, szKeyName, 0, 0, (BYTE*)pBuffer, (LPDWORD)&nLength);
+}
+
 LONG WINAPI Editor::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg) {
@@ -119,6 +226,9 @@ LONG WINAPI Editor::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
         return 0;
 
+    case WM_DESTROY:
+        return 0;
+
     default:
         return DefWindowProc(hwnd, msg, wParam, lParam);
     }
@@ -144,4 +254,43 @@ UINT Editor::CommandHandler(HWND hwnd, UINT nCtrlId, UINT nCtrlCode, HWND hwndFr
     default:
         return 0;
     }
+}
+
+UINT_PTR CALLBACK OpenHookProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    switch (msg) {
+    case WM_INITDIALOG:
+
+        if (Editor::g_fFirstTime) {
+            CenterWindow(GetParent(hwnd));
+            Editor::g_fFirstTime = false;
+        }
+
+        return true;
+    }
+
+    return 0;
+}
+void CenterWindow(HWND hwnd)
+{
+    HWND hwndParent = GetParent(hwnd);
+    RECT rcChild;
+    RECT rcParent;
+    int x, y;
+
+    GetWindowRect(hwnd, &rcChild);
+    GetWindowRect(hwndParent, &rcParent);
+
+    x = rcParent.left + (RectWidth(&rcParent) - RectWidth(&rcChild)) / 2;
+    y = rcParent.top + (RectHeight(&rcParent) - RectHeight(&rcChild)) / 2;
+
+    MoveWindow(hwnd, max(0, x), max(0, y), RectWidth(&rcChild), RectHeight(&rcChild), TRUE);
+}
+int RectWidth(RECT* rect)
+{
+    return rect->right - rect->left;
+}
+int RectHeight(RECT* rect)
+{
+    return rect->bottom - rect->top;
 }
