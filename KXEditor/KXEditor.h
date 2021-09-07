@@ -15,3 +15,4 @@
 ATOM EditorClass(HINSTANCE hInstance);
 BOOL InitEditorClass(HINSTANCE, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);

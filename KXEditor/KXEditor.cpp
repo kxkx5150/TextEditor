@@ -10,7 +10,6 @@ WCHAR szTitle[MAX_LOADSTRING];
 WCHAR szWindowClass[MAX_LOADSTRING];
 TCHAR g_szAppName[] = APP_TITLE;
 
-
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hpins, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -65,6 +64,22 @@ BOOL InitEditorClass(HINSTANCE hInstance, int nCmdShow)
 
     return TRUE;
 }
+INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    UNREFERENCED_PARAMETER(lParam);
+    switch (message) {
+    case WM_INITDIALOG:
+        return (INT_PTR)TRUE;
+
+    case WM_COMMAND:
+        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL) {
+            EndDialog(hDlg, LOWORD(wParam));
+            return (INT_PTR)TRUE;
+        }
+        break;
+    }
+    return (INT_PTR)FALSE;
+}
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message) {
@@ -73,6 +88,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         int wmId = LOWORD(wParam);
         switch (wmId) {
 
+        case IDM_ABOUT:
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+            break;
         case IDM_EXIT:
             DestroyWindow(hWnd);
             break;
