@@ -1,9 +1,8 @@
 #pragma once
-#include <windows.h>
+#include "StatusBar.h"
 #include "../TextView/TextView_def.h"
 #include "../TextView/TextView.h"
 #include "resource.h"
-#include "StatusBar.h"
 
 #define COURIERNEW 1
 #define LUCIDACONS 2

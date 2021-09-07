@@ -1,8 +1,6 @@
 #include <windows.h>
 #include "KXEditor.h"
-#include "../TextView/TextView.h"
 #pragma comment(lib, "uxtheme.lib")
-
 
 Editor* g_ptv;
 HINSTANCE hInst; // current instance

@@ -1,12 +1,3 @@
-//
-//	Neatpad - Simple Text Editor application
-//
-//	www.catch22.net
-//	Written by J Brown 2004-2006
-//
-//	Freeware
-//
-
 #include "StatusBar.h"
 #include "KXEditor.h"
 
