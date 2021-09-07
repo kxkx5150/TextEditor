@@ -68,6 +68,7 @@ public:
 
     LONG WINAPI WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
+
 private:
     //
     //	Message handlers
@@ -302,5 +303,6 @@ private:
     bool GetLogAttr(ULONG nLineNo, USPCACHE** puspCache, CSCRIPT_LOGATTR** plogAttr = 0, ULONG* pnOffset = 0);
 
     TextDocument* m_pTextDoc;
+
 };
 

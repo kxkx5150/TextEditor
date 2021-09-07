@@ -13,6 +13,7 @@
 #include "TextView_def.h"
 #include "TextDocument.h"
 #include "Unicode.h"
+#include <tchar.h>
 
 struct _BOM_LOOKUP BOMLOOK[] = {
     // define longest headers first
@@ -500,6 +501,9 @@ int TextDocument::getformat()
 {
     return m_nFileFormat;
 }
+
+
+
 
 ULONG TextDocument::size()
 {

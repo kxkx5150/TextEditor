@@ -1,10 +1,17 @@
 #include "Editor.h"
 #include <CRTDBG.H>
-#include <shobjidl.h>
-#include <shlguid.h>
 #include <initguid.h>
+#include <shlguid.h>
+#include <shobjidl.h>
 
 BOOL Editor::g_fFirstTime = false;
+
+LPCTSTR encoding[] = {
+    _T("UTF-8"),
+    _T("UTF-8 BOM"),
+    _T("UTF-16"),
+    _T("UTF-16BE")
+};
 
 Editor::Editor(HINSTANCE hInst, HWND hwnd)
 {
@@ -14,6 +21,10 @@ Editor::Editor(HINSTANCE hInst, HWND hwnd)
     m_hWnd = hwnd;
     m_hwndTextView = CreateTextView(hwnd);
     m_hwndStatusbar = CreateStatusBar(hwnd);
+
+
+    TextView* g_ptv = (TextView*)GetWindowLongPtr(hwnd, 0);
+
 
     PostMessage(m_hWnd, WM_COMMAND, IDM_FILE_NEW, 0);
 
@@ -60,18 +71,19 @@ BOOL Editor::ShowOpenFileDlg(HWND hwnd, TCHAR* pstrFileName, TCHAR* pstrTitleNam
 }
 BOOL Editor::DoOpenFile(HWND hwndMain, TCHAR* szFileName, TCHAR* szFileTitle)
 {
-    //int fmt, fmtlook[] = { IDM_VIEW_ASCII, IDM_VIEW_UTF8, IDM_VIEW_UTF16, IDM_VIEW_UTF16BE };
 
     if (TextView_OpenFile(m_hwndTextView, szFileName)) {
         SetWindowFileName(hwndMain, szFileTitle, FALSE);
         //g_fFileChanged = FALSE;
+        int fmt, fmtlook[] = { IDM_VIEW_UTF8, IDM_VIEW_UTF8B, IDM_VIEW_UTF16, IDM_VIEW_UTF16BE };
+        fmt = TextView_GetFormat(m_hwndTextView);
+        CheckMenuRadioItem(GetMenu(hwndMain),
+            IDM_VIEW_UTF8, IDM_VIEW_UTF16BE,
+            fmtlook[fmt], MF_BYCOMMAND);
 
-        //fmt = TextView_GetFormat(g_hwndTextView);
+        SetStatusBarText(m_hwndStatusbar, 2, 0, (TCHAR*)encoding[fmt]);
 
-        //CheckMenuRadioItem(GetMenu(hwndMain),
-        //    IDM_VIEW_ASCII, IDM_VIEW_UTF16BE,
-        //    fmtlook[fmt], MF_BYCOMMAND);
-
+        //
         //NotifyFileChange(szFileName, hwndMain, 0);
         return TRUE;
     } else {
@@ -275,16 +287,6 @@ BOOL Editor::ResolveShortcut(TCHAR* pszShortcut, TCHAR* pszFilePath, int nPathLe
     return FALSE;
 }
 
-
-
-
-
-
-
-
-
-
-
 UINT Editor::NotifyHandler(HWND hwnd, LPNMHDR nmhdr)
 {
     switch (nmhdr->code) {
@@ -308,8 +310,6 @@ UINT Editor::NotifyHandler(HWND hwnd, LPNMHDR nmhdr)
         break;
 
     case TVN_EDITMODE_CHANGE:
-        //SetStatusBarText(g_hwndStatusbar, 2, 0,
-        //    g_szEditMode[TextView_GetEditMode(g_hwndTextView)]);
 
         break;
 
@@ -342,7 +342,7 @@ LONG WINAPI Editor::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     } break;
 
     case WM_NOTIFY: {
-        NotifyHandler(hwnd, (LPNMHDR)lParam);       
+        NotifyHandler(hwnd, (LPNMHDR)lParam);
     } break;
 
     case WM_DROPFILES: {

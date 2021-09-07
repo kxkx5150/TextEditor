@@ -49,6 +49,16 @@
 #define ID_FILE_OPEN                    32772
 #define IDM_FILE_NEW                    32773
 #define IDM_FILE_OPEN                   32774
+#define ID_FILE_ENCODING                32775
+#define ID_Menu                         32776
+#define ID_ENCODING_UTF                 32777
+#define ID_ENCODING_UTF32778            32778
+#define ID_ENCODING_UTF32779            32779
+#define IDM_VIEW_UTF8                   32780
+#define UTF                             32781
+#define IDM_VIEW_UTF8B                  32782
+#define IDM_VIEW_UTF16                  32783
+#define IDM_VIEW_UTF16BE                32784
 #define SPVERSION_MASK                  0x0000FF00
 #define IDC_STATIC                      -1
 
@@ -58,7 +68,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        129
-#define _APS_NEXT_COMMAND_VALUE         32775
+#define _APS_NEXT_COMMAND_VALUE         32785
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           110
 #endif

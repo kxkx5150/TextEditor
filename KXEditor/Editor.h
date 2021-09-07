@@ -1,7 +1,7 @@
 #pragma once
 #include "StatusBar.h"
-#include "../TextView/TextView_def.h"
 #include "../TextView/TextView.h"
+#include "../TextView/TextView_def.h"
 #include "resource.h"
 
 #define COURIERNEW 1
@@ -13,12 +13,12 @@ int RectWidth(RECT* rect);
 int RectHeight(RECT* rect);
 void CenterWindow(HWND hwnd);
 
-
 class Editor {
 
 public:
     static BOOL g_fFirstTime;
 
+    TextView* g_ptv;
     TCHAR g_szFileName[MAX_PATH];
     TCHAR g_szFileTitle[MAX_PATH];
 

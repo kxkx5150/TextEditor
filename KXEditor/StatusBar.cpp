@@ -31,8 +31,8 @@ void SetStatusBarParts(HWND hwndSB)
     GetClientRect(hwndParent, &r);
 
     parentwidth = r.right < 400 ? 400 : r.right;
-    parts[0] = parentwidth - 250;
-    parts[1] = parentwidth - 70;
+    parts[0] = parentwidth - 320;
+    parts[1] = parentwidth - 120;
     parts[2] = parentwidth; //-1;
 
     // Tell the status bar to create the window parts.
@@ -62,6 +62,6 @@ HWND CreateStatusBar(HWND hwndParent)
     SetStatusBarParts(hwndSB);
     SetStatusBarText(hwndSB, 0, 1, (TCHAR*)_T(""));
     SetStatusBarText(hwndSB, 1, 0, (TCHAR*)_T(" Ln %d, Col %d"), 1, 1);
-    SetStatusBarText(hwndSB, 2, 0, (TCHAR*)_T(" INS"));
+    SetStatusBarText(hwndSB, 2, 0, (TCHAR*)_T(" UTF-8"));
     return hwndSB;
 }
