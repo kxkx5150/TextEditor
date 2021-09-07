@@ -22,9 +22,7 @@ Editor::Editor(HINSTANCE hInst, HWND hwnd)
     m_hwndTextView = CreateTextView(hwnd);
     m_hwndStatusbar = CreateStatusBar(hwnd);
 
-
     TextView* g_ptv = (TextView*)GetWindowLongPtr(hwnd, 0);
-
 
     PostMessage(m_hWnd, WM_COMMAND, IDM_FILE_NEW, 0);
 
@@ -49,6 +47,25 @@ void Editor::SetWindowFileName(HWND hwnd, TCHAR* szFileName, BOOL fModified)
     wsprintf(ach, _T("%s - %s"), szFileName, mod);
     SetWindowText(hwnd, ach);
 }
+
+void Editor::InitOpenFile(HWND hwnd, int fmt)
+{
+    switch (fmt) {
+    case IDM_FILE_NEW:
+        g_szFileTitle[0] = '\0';
+        g_szFileName[0] = '\0';
+        TextView_Clear(m_hwndTextView);
+        DoOpenFile(hwnd, g_szFileName, g_szFileTitle);
+        //g_fFileChanged = FALSE;
+        break;
+
+    default:
+        if (ShowOpenFileDlg(hwnd, g_szFileName, g_szFileTitle)) {
+            DoOpenFile(hwnd, g_szFileName, g_szFileTitle);
+        }
+        break;
+    }
+}
 BOOL Editor::ShowOpenFileDlg(HWND hwnd, TCHAR* pstrFileName, TCHAR* pstrTitleName)
 {
     LPCTSTR szFilter = _T("All Files (*.*)\0*.*\0\0");
@@ -71,16 +88,18 @@ BOOL Editor::ShowOpenFileDlg(HWND hwnd, TCHAR* pstrFileName, TCHAR* pstrTitleNam
 }
 BOOL Editor::DoOpenFile(HWND hwndMain, TCHAR* szFileName, TCHAR* szFileTitle)
 {
-
-    if (TextView_OpenFile(m_hwndTextView, szFileName)) {
-        SetWindowFileName(hwndMain, szFileTitle, FALSE);
-        //g_fFileChanged = FALSE;
+    if (_tcslen(szFileName) == 0 || TextView_OpenFile(m_hwndTextView, szFileName)) {
         int fmt, fmtlook[] = { IDM_VIEW_UTF8, IDM_VIEW_UTF8B, IDM_VIEW_UTF16, IDM_VIEW_UTF16BE };
+
+        if (_tcslen(szFileName) == 0)
+            SetWindowFileName(hwndMain,(TCHAR*)L"Untitled", FALSE);
+        else
+            SetWindowFileName(hwndMain, szFileTitle, FALSE);
+        //g_fFileChanged = FALSE;
         fmt = TextView_GetFormat(m_hwndTextView);
         CheckMenuRadioItem(GetMenu(hwndMain),
             IDM_VIEW_UTF8, IDM_VIEW_UTF16BE,
             fmtlook[fmt], MF_BYCOMMAND);
-
         SetStatusBarText(m_hwndStatusbar, 2, 0, (TCHAR*)encoding[fmt]);
 
         //
@@ -363,17 +382,11 @@ UINT Editor::CommandHandler(HWND hwnd, UINT nCtrlId, UINT nCtrlCode, HWND hwndFr
 {
     switch (nCtrlId) {
     case IDM_FILE_NEW:
-        SetWindowFileName(hwnd, (TCHAR*)_T("Untitled"), FALSE);
-        TextView_Clear(m_hwndTextView);
-        g_szFileTitle[0] = '\0';
-        //g_fFileChanged = FALSE;
+        InitOpenFile(hwnd, IDM_FILE_NEW);
         return 0;
 
     case IDM_FILE_OPEN:
-        if (ShowOpenFileDlg(hwnd, g_szFileName, g_szFileTitle)) {
-            DoOpenFile(hwnd, g_szFileName, g_szFileTitle);
-        }
-
+        InitOpenFile(hwnd, IDM_FILE_OPEN);
         return 0;
 
     default:

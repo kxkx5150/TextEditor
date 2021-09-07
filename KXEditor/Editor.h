@@ -75,6 +75,7 @@ public:
     void SetWindowFileName(HWND hwnd, TCHAR* szFileName, BOOL fModified);
     void SetWindSize(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+    void InitOpenFile(HWND hwnd, int fmt);
     BOOL ShowOpenFileDlg(HWND hwnd, TCHAR* pstrFileName, TCHAR* pstrTitleName);
     BOOL DoOpenFile(HWND hwndMain, TCHAR* szFileName, TCHAR* szFileTitle);
     void OpenFile(HWND hwnd, TCHAR* szFile);
