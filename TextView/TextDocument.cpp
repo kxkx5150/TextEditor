@@ -17,12 +17,12 @@
 struct _BOM_LOOKUP BOMLOOK[] = 
 {
 	// define longest headers first
-	{ 0x0000FEFF, 4, NCP_UTF32    },
+	{ 0x0000FEFF, 4, NCP_UTF32B    },
 	{ 0xFFFE0000, 4, NCP_UTF32BE  },
-	{ 0xBFBBEF,	  3, NCP_UTF8	  },
+	{ 0xBFBBEF,	  3, NCP_UTF8B	  },
 	{ 0xFFFE,	  2, NCP_UTF16BE  },
-	{ 0xFEFF,	  2, NCP_UTF16    },
-	{ 0,          0, NCP_ASCII	  },
+	{ 0xFEFF,	  2, NCP_UTF16B    },
+	{ 0,          0, NCP_UTF8	  },
 };
 
 //
@@ -39,7 +39,7 @@ TextDocument::TextDocument()
 	m_pLineBuf_char		= 0;
 	m_nNumLines			= 0;
 
-	m_nFileFormat		= NCP_ASCII;
+	m_nFileFormat		= NCP_UTF8;
 	m_nHeaderSize		= 0;
 }
 
@@ -147,7 +147,7 @@ int TextDocument::detect_file_format(int *m_nHeaderSize)
 	}
 
 	*m_nHeaderSize = 0;
-	return NCP_ASCII;	// default to ASCII
+	return NCP_UTF8;	// default to ASCII
 }
 
 
@@ -211,19 +211,19 @@ int TextDocument::getchar(ULONG offset, ULONG lenbytes, ULONG *pch32)
 
 	switch(m_nFileFormat)
 	{
-	case NCP_ASCII:
+	case NCP_UTF8:
 		//MultiByteToWideChar(CP_ACP, 0, (CCHAR*)rawdata, 1, &ch16, 1);
         utf8_to_utf32(rawdata, lenbytes, pch32);
 		//*pch32 = ch16;
 		return 1;
 
-	case NCP_UTF16:
+	case NCP_UTF16B:
 		return utf16_to_utf32(rawdata_w, lenbytes / 2, pch32, &ch32len) * sizeof(WCHAR);
 		
 	case NCP_UTF16BE:
 		return utf16be_to_utf32(rawdata_w, lenbytes / 2, pch32, &ch32len) * sizeof(WCHAR);
 
-	case NCP_UTF8:
+	case NCP_UTF8B:
 		return utf8_to_utf32(rawdata, lenbytes, pch32);
 
 	default:
@@ -610,15 +610,15 @@ size_t TextDocument::rawdata_to_utf16(BYTE *rawdata, size_t rawlen, TCHAR *utf16
 	switch(m_nFileFormat)
 	{
 	// convert from ANSI->UNICODE
-	case NCP_ASCII:
+	case NCP_UTF8:
 		//return ascii_to_utf16(rawdata, rawlen, (UTF16 *)utf16str, utf16len);
         return utf8_to_utf16(rawdata, rawlen, (UTF16*)utf16str, utf16len);
 
-	case NCP_UTF8:
+	case NCP_UTF8B:
 		return utf8_to_utf16(rawdata, rawlen, (UTF16 *)utf16str, utf16len);
 
 	// already unicode, do a straight memory copy
-	case NCP_UTF16:
+	case NCP_UTF16B:
 		rawlen /= sizeof(TCHAR);
 		return copy_utf16((UTF16 *)rawdata, rawlen, (UTF16 *)utf16str, utf16len) * sizeof(TCHAR);
 
@@ -646,16 +646,16 @@ size_t TextDocument::utf16_to_rawdata(TCHAR *utf16str, size_t utf16len, BYTE *ra
 	switch(m_nFileFormat)
 	{
 	// convert from UTF16 -> ASCII
-	case NCP_ASCII:
+	case NCP_UTF8:
 		//return utf16_to_ascii((UTF16 *)utf16str, utf16len, rawdata, rawlen);
         return utf16_to_utf8((UTF16*)utf16str, utf16len, rawdata, rawlen);
 
 	// convert from UTF16 -> UTF8
-	case NCP_UTF8:
+	case NCP_UTF8B:
 		return utf16_to_utf8((UTF16 *)utf16str, utf16len, rawdata, rawlen);
 
 	// already unicode, do a straight memory copy
-	case NCP_UTF16:
+	case NCP_UTF16B:
 		*rawlen /= sizeof(TCHAR);
 		utf16len = copy_utf16((UTF16 *)utf16str, utf16len, (UTF16 *)rawdata, rawlen);
 		*rawlen *= sizeof(TCHAR);
@@ -787,10 +787,10 @@ ULONG TextDocument::count_chars(ULONG offset_bytes, ULONG length_chars)
 {
 	switch(m_nFileFormat)
 	{
-	case NCP_ASCII:
+	case NCP_UTF8:
 		return length_chars;
 
-	case NCP_UTF16:
+	case NCP_UTF16B:
 	case NCP_UTF16BE:
 		return length_chars * sizeof(WCHAR);
 
@@ -819,15 +819,15 @@ ULONG TextDocument::byteoffset_to_charoffset(ULONG offset_bytes)
 {
 	switch(m_nFileFormat)
 	{
-	case NCP_ASCII:
+	case NCP_UTF8:
 		return offset_bytes;
 
-	case NCP_UTF16:
+	case NCP_UTF16B:
 	case NCP_UTF16BE:
 		return offset_bytes / sizeof(WCHAR);
 
-	case NCP_UTF8:
-	case NCP_UTF32:
+	case NCP_UTF8B:
+	case NCP_UTF32B:
 	case NCP_UTF32BE:
 		// bug bug! need to implement this. 
 	default:
@@ -841,15 +841,15 @@ ULONG TextDocument::charoffset_to_byteoffset(ULONG offset_chars)
 {
 	switch(m_nFileFormat)
 	{
-	case NCP_ASCII:
+	case NCP_UTF8:
 		return offset_chars;
 
-	case NCP_UTF16:
+	case NCP_UTF16B:
 	case NCP_UTF16BE:
 		return offset_chars * sizeof(WCHAR);
 
-	case NCP_UTF8:
-	case NCP_UTF32:
+	case NCP_UTF8B:
+	case NCP_UTF32B:
 	case NCP_UTF32BE:
 	default:
 		break;
