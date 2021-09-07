@@ -74,9 +74,12 @@ public:
     HWND getHwndTextView();
 
     void SetWindowFileName(HWND hwnd, TCHAR* szFileName, BOOL fModified);
+    void SetWindSize(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
     BOOL ShowOpenFileDlg(HWND hwnd, TCHAR* pstrFileName, TCHAR* pstrTitleName);
     BOOL DoOpenFile(HWND hwndMain, TCHAR* szFileName, TCHAR* szFileTitle);
+    void OpenFile(HWND hwnd, TCHAR* szFile);
+    void HandleDropFiles(HWND hwnd, HDROP hDrop);
 
     LONG WINAPI WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
     UINT CommandHandler(HWND hwnd, UINT nCtrlId, UINT nCtrlCode, HWND hwndFrom);
@@ -88,4 +91,8 @@ public:
     BOOL GetSettingBin(HKEY hkey, TCHAR szKeyName[], PVOID pBuffer, LONG nLength);
     void ApplyRegSettings();
     HFONT EasyCreateFont(int nPointSize, BOOL fBold, DWORD dwQuality, TCHAR* szFace);
+
+
+
+
 };

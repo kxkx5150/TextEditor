@@ -1,7 +1,5 @@
 #pragma once
 #include <windows.h>
-#include <commctrl.h>
-#include <stdarg.h>
 #include <tchar.h>
 
 #define _CRT_SECURE_NO_DEPRECATE

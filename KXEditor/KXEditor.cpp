@@ -1,6 +1,8 @@
+#include <windows.h>
 #include "KXEditor.h"
 #include "../TextView/TextView.h"
 #pragma comment(lib, "uxtheme.lib")
+
 
 Editor* g_ptv;
 HINSTANCE hInst; // current instance
@@ -91,9 +93,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;
+
         case IDM_EXIT:
             DestroyWindow(hWnd);
             break;
+
         default:
             if (g_ptv) {
                 return g_ptv->WndProc(hWnd, message, wParam, lParam);
@@ -113,6 +117,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         if ((g_ptv = new Editor(hInst, hWnd)) == 0)
             return FALSE;
         g_hwndTextView = g_ptv->getHwndTextView();
+        DragAcceptFiles(hWnd, TRUE);
+
     } break;
 
     case WM_DESTROY: {

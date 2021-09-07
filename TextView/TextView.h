@@ -1,5 +1,4 @@
 #pragma once
-#include <commctrl.h>
 #include <uxtheme.h>
 #include "TextDocument.h"
 #include "..\UspLib\usplib.h"

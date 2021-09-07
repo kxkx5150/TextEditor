@@ -6,7 +6,6 @@
 #include <memory.h>
 #include <stdlib.h>
 #include <tchar.h>
-#include <windows.h>
 #include "Editor.h"
 
 #define MAX_LOADSTRING 100

@@ -180,6 +180,75 @@ BOOL Editor::GetSettingBin(HKEY hkey, TCHAR szKeyName[], PVOID pBuffer, LONG nLe
     ZeroMemory(pBuffer, nLength);
     return !RegQueryValueEx(hkey, szKeyName, 0, 0, (BYTE*)pBuffer, (LPDWORD)&nLength);
 }
+void Editor::SetWindSize(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    int width, height, heightsb;
+    RECT rect;
+    HDWP hdwp;
+
+    width = (short)LOWORD(lParam);
+    height = (short)HIWORD(lParam);
+
+    GetWindowRect(m_hwndStatusbar, &rect);
+    heightsb = rect.bottom - rect.top;
+    hdwp = BeginDeferWindowPos(3);
+
+    if (g_fShowStatusbar) {
+        DeferWindowPos(hdwp, m_hwndStatusbar, 0, 0, height - heightsb, width, heightsb, SWP_SHOWWINDOW);
+        MoveWindow(m_hwndStatusbar, 0, height - heightsb, width, heightsb, TRUE);
+        height -= heightsb;
+    }
+
+    DeferWindowPos(hdwp, m_hwndTextView, 0, 0, 0, width, height, SWP_SHOWWINDOW);
+    MoveWindow(m_hwndTextView, 0, 0, width, height, TRUE);
+    EndDeferWindowPos(hdwp);
+    SetStatusBarParts(m_hwndStatusbar);
+}
+void Editor::OpenFile(HWND hwnd, TCHAR* szFile)
+{
+    TCHAR* name;
+    //SaveFileData(g_szFileName, hwnd);
+    ///_CRT_SECURE_NO_DEPRECATE
+    //_tcscpy(g_szFileName, szFile);
+    //name = _tcsrchr(g_szFileName, '\\');
+    //_tcscpy(g_szFileTitle, name ? name + 1 : szFile);
+
+    _tcscpy_s(g_szFileName, MAX_PATH, szFile);
+    name = _tcsrchr(g_szFileName, '\\');
+    _tcscpy_s(g_szFileTitle, MAX_PATH, name ? name + 1 : szFile);
+
+    DoOpenFile(hwnd, g_szFileName, g_szFileTitle);
+}
+void Editor::HandleDropFiles(HWND hwnd, HDROP hDrop)
+{
+    TCHAR buf[MAX_PATH];
+
+    if (DragQueryFile(hDrop, 0, buf, MAX_PATH)) {
+        TCHAR tmp[MAX_PATH];
+
+        //if (ResolveShortcut(buf, tmp, MAX_PATH))
+        //    lstrcpy(buf, tmp);
+
+        OpenFile(hwnd, buf);
+    }
+
+    DragFinish(hDrop);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 LONG WINAPI Editor::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -203,28 +272,11 @@ LONG WINAPI Editor::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         return 0;
 
     case WM_SIZE:
-        int width, height, heightsb;
-        RECT rect;
-        HDWP hdwp;
+        SetWindSize(hwnd, msg, wParam, lParam);
+        return 0;
 
-        width = (short)LOWORD(lParam);
-        height = (short)HIWORD(lParam);
-
-        GetWindowRect(m_hwndStatusbar, &rect);
-        heightsb = rect.bottom - rect.top;
-        hdwp = BeginDeferWindowPos(3);
-
-        if (g_fShowStatusbar) {
-            DeferWindowPos(hdwp, m_hwndStatusbar, 0, 0, height - heightsb, width, heightsb, SWP_SHOWWINDOW);
-            MoveWindow(m_hwndStatusbar, 0, height - heightsb, width, heightsb, TRUE);
-            height -= heightsb;
-        }
-
-        DeferWindowPos(hdwp, m_hwndTextView, 0, 0, 0, width, height, SWP_SHOWWINDOW);
-        MoveWindow(m_hwndTextView, 0, 0, width, height, TRUE);
-        EndDeferWindowPos(hdwp);
-        SetStatusBarParts(m_hwndStatusbar);
-
+    case WM_DROPFILES:
+        HandleDropFiles(hwnd, (HDROP)wParam);
         return 0;
 
     case WM_DESTROY:
