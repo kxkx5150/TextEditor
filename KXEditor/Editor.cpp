@@ -1,5 +1,8 @@
 #include "Editor.h"
 #include <CRTDBG.H>
+#include <shobjidl.h>
+#include <shlguid.h>
+#include <initguid.h>
 
 BOOL Editor::g_fFirstTime = false;
 
@@ -18,7 +21,6 @@ Editor::Editor(HINSTANCE hInst, HWND hwnd)
 }
 Editor::~Editor()
 {
-    DeleteObject(g_hFont);
 }
 HWND Editor::getHwndTextView()
 {
@@ -225,14 +227,52 @@ void Editor::HandleDropFiles(HWND hwnd, HDROP hDrop)
 
     if (DragQueryFile(hDrop, 0, buf, MAX_PATH)) {
         TCHAR tmp[MAX_PATH];
-
-        //if (ResolveShortcut(buf, tmp, MAX_PATH))
-        //    lstrcpy(buf, tmp);
+        if (ResolveShortcut(buf, tmp, MAX_PATH))
+            lstrcpy(buf, tmp);
 
         OpenFile(hwnd, buf);
     }
 
     DragFinish(hDrop);
+}
+BOOL Editor::ResolveShortcut(TCHAR* pszShortcut, TCHAR* pszFilePath, int nPathLen)
+{
+    //IShellLink* psl;
+    //SHFILEINFO info = { 0 };
+    //IPersistFile* ppf;
+
+    //*pszFilePath = 0; // assume failure
+
+    //// retrieve file's shell-attributes
+    //if ((SHGetFileInfo(pszShortcut, 0, &info, sizeof(info), SHGFI_ATTRIBUTES) == 0))
+    //    return FALSE;
+
+    //// not a shortcut?
+    //if (!(info.dwAttributes & SFGAO_LINK)) {
+    //    lstrcpyn(pszFilePath, pszShortcut, nPathLen);
+    //    return TRUE;
+    //}
+
+    //// obtain the IShellLink interface
+    //if (FAILED(CoCreateInstance(&CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, &IID_IShellLink, (LPVOID*)&psl)))
+    //    return FALSE;
+
+    //if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl, &IID_IPersistFile, (LPVOID*)&ppf))) {
+    //    if (SUCCEEDED(ppf->lpVtbl->Load(ppf, pszShortcut, STGM_READ))) {
+    //        // Resolve the link, this may post UI to find the link
+    //        if (SUCCEEDED(psl->lpVtbl->Resolve(psl, 0, SLR_NO_UI))) {
+    //            psl->lpVtbl->GetPath(psl, pszFilePath, nPathLen, NULL, 0);
+    //            ppf->lpVtbl->Release(ppf);
+    //            psl->lpVtbl->Release(psl);
+    //            return TRUE;
+    //        }
+    //    }
+
+    //    ppf->lpVtbl->Release(ppf);
+    //}
+
+    //psl->lpVtbl->Release(psl);
+    return FALSE;
 }
 
 
@@ -245,42 +285,73 @@ void Editor::HandleDropFiles(HWND hwnd, HDROP hDrop)
 
 
 
+UINT Editor::NotifyHandler(HWND hwnd, LPNMHDR nmhdr)
+{
+    switch (nmhdr->code) {
 
+    case TVN_CHANGED:
+        //if (g_szFileTitle[0]) {
+        //    BOOL fModified = TextView_CanUndo(g_hwndTextView);
 
+        //    if (fModified != g_fFileChanged) {
+        //        SetWindowFileName(hwnd, g_szFileTitle, fModified);
+        //        g_fFileChanged = fModified;
+        //    }
+        //}
+        break;
 
+    case TVN_CURSOR_CHANGE:
+        SetStatusBarText(m_hwndStatusbar, 1, 0, (TCHAR*)_T(" Ln %d, Col %d"),
+            TextView_GetCurLine(m_hwndTextView) + 1,
+            TextView_GetCurCol(m_hwndTextView) + 1);
 
+        break;
+
+    case TVN_EDITMODE_CHANGE:
+        //SetStatusBarText(g_hwndStatusbar, 2, 0,
+        //    g_szEditMode[TextView_GetEditMode(g_hwndTextView)]);
+
+        break;
+
+    default:
+        break;
+    }
+
+    return 0;
+}
 
 LONG WINAPI Editor::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg) {
 
     case WM_COMMAND: {
-        int wmId = LOWORD(wParam);
-
-        switch (wmId) {
-
+        switch (LOWORD(wParam)) {
         case IDM_ABOUT:
             break;
-
         default:
             return CommandHandler(hwnd, LOWORD(wParam), HIWORD(wParam), (HWND)lParam);
         }
     } break;
 
-    case WM_SETFOCUS:
+    case WM_SETFOCUS: {
         SetFocus(m_hwndTextView);
-        return 0;
+    } break;
 
-    case WM_SIZE:
+    case WM_SIZE: {
         SetWindSize(hwnd, msg, wParam, lParam);
-        return 0;
+    } break;
 
-    case WM_DROPFILES:
+    case WM_NOTIFY: {
+        NotifyHandler(hwnd, (LPNMHDR)lParam);       
+    } break;
+
+    case WM_DROPFILES: {
         HandleDropFiles(hwnd, (HDROP)wParam);
-        return 0;
+    } break;
 
-    case WM_DESTROY:
-        return 0;
+    case WM_DESTROY: {
+        DeleteObject(g_hFont);
+    } break;
 
     default:
         return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -292,9 +363,9 @@ UINT Editor::CommandHandler(HWND hwnd, UINT nCtrlId, UINT nCtrlCode, HWND hwndFr
 {
     switch (nCtrlId) {
     case IDM_FILE_NEW:
-        SetWindowText(hwnd, L"Untitled");
+        SetWindowFileName(hwnd, (TCHAR*)_T("Untitled"), FALSE);
         TextView_Clear(m_hwndTextView);
-        //g_szFileTitle[0] = '\0';
+        g_szFileTitle[0] = '\0';
         //g_fFileChanged = FALSE;
         return 0;
 
@@ -304,6 +375,7 @@ UINT Editor::CommandHandler(HWND hwnd, UINT nCtrlId, UINT nCtrlCode, HWND hwndFr
         }
 
         return 0;
+
     default:
         return 0;
     }

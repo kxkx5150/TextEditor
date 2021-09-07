@@ -20,12 +20,6 @@ class Editor {
 public:
     static BOOL g_fFirstTime;
 
-    HINSTANCE m_mainhInst;
-
-    HWND m_hWnd;
-    HWND m_hwndTextView;
-    HWND m_hwndStatusbar;
-
     TCHAR g_szFileName[MAX_PATH];
     TCHAR g_szFileTitle[MAX_PATH];
 
@@ -67,6 +61,12 @@ public:
         RGB(230, 240, 255), // current line background
     };
 
+private:
+    HINSTANCE m_mainhInst;
+    HWND m_hWnd;
+    HWND m_hwndTextView;
+    HWND m_hwndStatusbar;
+
 public:
     Editor(HINSTANCE hInst, HWND hwnd);
     ~Editor();
@@ -92,7 +92,6 @@ public:
     void ApplyRegSettings();
     HFONT EasyCreateFont(int nPointSize, BOOL fBold, DWORD dwQuality, TCHAR* szFace);
 
-
-
-
+    UINT NotifyHandler(HWND hwnd, LPNMHDR nmhdr);
+    BOOL ResolveShortcut(TCHAR* pszShortcut, TCHAR* pszFilePath, int nPathLen);
 };

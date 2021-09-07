@@ -114,10 +114,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     } break;
 
     case WM_CREATE: {
+        DragAcceptFiles(hWnd, TRUE);
         if ((g_ptv = new Editor(hInst, hWnd)) == 0)
             return FALSE;
         g_hwndTextView = g_ptv->getHwndTextView();
-        DragAcceptFiles(hWnd, TRUE);
 
     } break;
 
