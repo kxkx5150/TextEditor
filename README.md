@@ -17,6 +17,12 @@ https://user-images.githubusercontent.com/10168979/132229194-6b1a54ee-8e03-448b-
  ビルドエラーになる場合は構成マネージャーでx86を指定して下さい。
  
  <br><br>
+ 
+ 追記  
+ Piece Chains (piece table)  
+ http://vivi.dyndns.org/vivi/docs/buffer/edit_buffer2.php
+ 
+ <br><br>
 
  チュートリアルは  
  オリジナル　http://www.catch22.net/tuts/neatpad/neatpad-overview  
